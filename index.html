@@ -2,8 +2,8 @@
 <html lang="ro">
 <head>
     <link rel="manifest" href="manifest.json">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scor Rummy - de VAF</title>
@@ -58,6 +58,11 @@
             background: transparent; border: none; color: var(--white);
             font-weight: bold; font-size: 16px; text-align: center;
             width: 100%; box-sizing: border-box;
+        }
+        
+        .player-name::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: normal;
         }
 
         .player-name:focus {
@@ -159,19 +164,19 @@
                 <tr>
                     <th class="round-col">#</th>
                     <th>
-                        <input type="text" class="player-name" id="nume0" value="Eva">
+                        <input type="text" class="player-name" id="nume0" value="" placeholder="Jucător 1">
                         <span class="dealer-badge" id="dealer0"></span>
                     </th>
                     <th>
-                        <input type="text" class="player-name" id="nume1" value="Vlad">
+                        <input type="text" class="player-name" id="nume1" value="" placeholder="Jucător 2">
                         <span class="dealer-badge" id="dealer1"></span>
                     </th>
                     <th>
-                        <input type="text" class="player-name" id="nume2" value="Lori">
+                        <input type="text" class="player-name" id="nume2" value="" placeholder="Jucător 3">
                         <span class="dealer-badge" id="dealer2"></span>
                     </th>
                     <th>
-                        <input type="text" class="player-name" id="nume3" value="Cris">
+                        <input type="text" class="player-name" id="nume3" value="" placeholder="Jucător 4">
                         <span class="dealer-badge" id="dealer3"></span>
                     </th>
                 </tr>
