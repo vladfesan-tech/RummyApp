@@ -131,12 +131,23 @@
             background: var(--white); padding: 25px; border-radius: 12px;
             text-align: center; max-width: 90%; width: 350px;
         }
-        .modal-buttons {
-            display: flex; flex-direction: column; gap: 10px; margin-top: 20px;
+        
+        .modal-name-input {
+            width: 100%; padding: 10px; margin-bottom: 10px; box-sizing: border-box;
+            border: 1px solid var(--border); border-radius: 6px; font-size: 16px;
+            text-align: center;
+        }
+        .modal-name-input:focus {
+            outline: none; border-color: var(--primary); box-shadow: 0 0 5px rgba(44, 62, 80, 0.2);
+        }
+
+        .modal-buttons-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;
         }
         .btn-modal {
             background-color: var(--primary); color: var(--white); border: none;
-            padding: 10px; border-radius: 6px; font-size: 16px; cursor: pointer;
+            padding: 12px 10px; border-radius: 6px; font-size: 14px; cursor: pointer;
+            font-weight: bold; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;
         }
         .btn-modal:hover { background-color: #34495e; }
     </style>
@@ -145,9 +156,16 @@
 
     <div class="modal-overlay" id="setupModal">
         <div class="modal-content">
-            <h2 style="margin-top: 0;">Cine face primul?</h2>
-            <p style="margin: 0; color: #7f8c8d;">Alege cine este primul dealer.</p>
-            <div class="modal-buttons">
+            <h2 style="margin-top: 0;">Setare Joc Nou</h2>
+            <p style="margin: 0 0 15px 0; color: #7f8c8d;">Introduceți numele jucătorilor:</p>
+            
+            <input type="text" id="modal-input-0" class="modal-name-input" placeholder="Jucător 1" oninput="updateModalButtons()">
+            <input type="text" id="modal-input-1" class="modal-name-input" placeholder="Jucător 2" oninput="updateModalButtons()">
+            <input type="text" id="modal-input-2" class="modal-name-input" placeholder="Jucător 3" oninput="updateModalButtons()">
+            <input type="text" id="modal-input-3" class="modal-name-input" placeholder="Jucător 4" oninput="updateModalButtons()">
+
+            <p style="margin: 15px 0 5px 0; font-weight: bold; color: var(--primary);">Alege cine este primul dealer:</p>
+            <div class="modal-buttons-grid">
                 <button class="btn-modal" id="modal-btn-0" onclick="setDealer(0)"></button>
                 <button class="btn-modal" id="modal-btn-1" onclick="setDealer(1)"></button>
                 <button class="btn-modal" id="modal-btn-2" onclick="setDealer(2)"></button>
@@ -233,13 +251,28 @@
 
         function arataModalDealer() {
             document.getElementById('setupModal').style.display = 'flex';
+            // Pre-populează inputurile din modal cu valorile din tabel (dacă există)
             for (let i = 0; i < 4; i++) {
-                let nume = document.getElementById('nume' + i).value || ('Jucător ' + (i+1));
-                document.getElementById('modal-btn-' + i).innerText = nume;
+                let numeTabel = document.getElementById('nume' + i).value;
+                document.getElementById('modal-input-' + i).value = numeTabel;
+            }
+            updateModalButtons();
+        }
+
+        function updateModalButtons() {
+            for (let i = 0; i < 4; i++) {
+                let numeIntrodus = document.getElementById('modal-input-' + i).value.trim();
+                document.getElementById('modal-btn-' + i).innerText = numeIntrodus || ('Jucător ' + (i+1));
             }
         }
 
         function setDealer(index) {
+            // Transferă numele din modal în tabel
+            for (let i = 0; i < 4; i++) {
+                let numeIntrodus = document.getElementById('modal-input-' + i).value.trim();
+                document.getElementById('nume' + i).value = numeIntrodus;
+            }
+
             currentDealer = index;
             document.getElementById('setupModal').style.display = 'none';
             actualizeazaInterfata();
@@ -290,15 +323,9 @@
             actualizeazaInterfata();
         }
 
-        // Funcția nouă care permite editarea pe loc și recalcularea
         function editeazaScor(roundIndex, playerIndex, inputElement) {
-            // Dacă s-a șters tot din input, considerăm 0
             const valoareNoua = parseInt(inputElement.value) || 0;
-            
-            // Actualizăm valoarea în istoric
             istoricRunde[roundIndex].scoruri[playerIndex] = valoareNoua;
-            
-            // Recalculăm DOAR totalurile (fără a redesena tot tabelul ca să nu pierzi focusul)
             recalculeazaTotaluri();
         }
 
@@ -330,12 +357,10 @@
                 runda.scoruri.forEach((scor, pIndex) => {
                     const td = document.createElement('td');
                     
-                    // Cream un input pentru ca scorul să poată fi corectat oricând
                     const inputEdit = document.createElement('input');
                     inputEdit.type = 'number';
                     inputEdit.className = 'edit-input';
                     inputEdit.value = scor;
-                    // oninput va declanșa recalcularea exact în momentul în care tastezi o cifră
                     inputEdit.oninput = function() { editeazaScor(index, pIndex, this); };
                     
                     td.appendChild(inputEdit);
